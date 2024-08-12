@@ -4,7 +4,7 @@ import pandas as pd
 import base64
 from PIL import Image
 import io
-import openai
+import openai 
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 import json
@@ -28,27 +28,29 @@ import numpy as np
 import pandas as pd
 from fuzzywuzzy import fuzz
 
+
 # Initialize OpenAI client
 load_dotenv()
-openai.api_key = st.secrets['openai']['api_key']
+openai.api_key= st.secrets['openai']['api_key']
+
 
 
 def extract_text_and_images_from_pdf(file):
     resource_manager = PDFResourceManager()
     pages_content = []
-
+    
     laparams = LAParams()
     device = PDFPageAggregator(resource_manager, laparams=laparams)
     interpreter = PDFPageInterpreter(resource_manager, device)
-
+    
     with io.BytesIO(file.read()) as fh:
         for page in PDFPage.get_pages(fh, caching=True, check_extractable=True):
             interpreter.process_page(page)
             layout = device.get_result()
-
+            
             text = ""
             images = []
-
+            
             for element in layout:
                 if isinstance(element, LTTextContainer):
                     text += element.get_text()
@@ -59,23 +61,21 @@ def extract_text_and_images_from_pdf(file):
                             images.append(child)
                 elif isinstance(element, LTImage):
                     images.append(element)
-
+            
             pages_content.append({"text": text, "images": images})
-
+    
     return pages_content
-
 
 def preprocess_text(text):
     text = re.sub(r'\s+', ' ', text).strip()
     text = text.lower()
     return text
 
-
 def generate_invoice_details(invoice):
     processed_text = preprocess_text(invoice)
-
+    
     llm = ChatOpenAI(temperature=0.7)
-
+    
     prompt_template = """
 Analyze the following invoice text and extract all relevant information.
 
@@ -94,12 +94,11 @@ Invoice Text:
     prompt = PromptTemplate(
         input_variables=["invoice_text"],
         template=prompt_template)
-
+    
     chain = prompt | llm
-
+    
     response = chain.invoke(processed_text)
     return response.content
-
 
 def json_to_dataframe(json_string):
     data = json.loads(json_string)
@@ -107,20 +106,17 @@ def json_to_dataframe(json_string):
     df = pd.DataFrame(normalized_data)
     return df
 
-
 def encode_image(image):
     buffered = io.BytesIO()
     image.save(buffered, format="PNG")
     return base64.b64encode(buffered.getvalue()).decode('utf-8')
 
-
 import json
 import re
 
-
 def analyze_invoice_image(image, extracted_text):
     base64_image = encode_image(image)
-
+    
     prompt_text = """You are an expert in Invoice analysis and optical character recognition (OCR).
     Analyze the provided invoice image and extracted text. Extract all relevant details in a structured JSON format.
     Pay close attention to accuracy and do not fill in missing information. If a piece of information is not clearly present in the image or text, use null.
@@ -172,7 +168,8 @@ def analyze_invoice_image(image, extracted_text):
     Provide null for any fields where you cannot find accurate information in the invoice.
     Do not include any text before or after the JSON object in your response.
     """
-
+    
+    
     response = openai.chat.completions.create(
         model="gpt-4o",
         messages=[
@@ -204,13 +201,11 @@ def analyze_invoice_image(image, extracted_text):
                 return json.loads(json_match.group())
             except json.JSONDecodeError:
                 pass
-
+        
         # If all else fails, return an error message
         return {"error": "Failed to parse response as JSON", "raw_response": content}
 
-
 import pandas as pd
-
 
 def combine_image_reports(image_reports):
     combined_data = []
@@ -250,7 +245,8 @@ def combine_image_reports(image_reports):
 
 def match_with_master_csv(generated_df, master_df):
     # Load the master CSV
-
+   
+    
     # Function to find the best match
     def find_best_match(product_desc):
         best_match = None
@@ -280,21 +276,22 @@ def match_with_master_csv(generated_df, master_df):
 
     # Create DataFrame with master CSV column order
     matched_df = pd.DataFrame(matched_rows, columns=master_df.columns)
-
+    
     return matched_df
+
 
 
 def clean_dataframe(df):
     # Remove any columns that are entirely NaN
     df = df.dropna(axis=1, how='all')
-
+    
     # Replace NaN with empty string
     df = df.fillna('')
-
+    
     # Trim whitespace from string columns
     for col in df.select_dtypes(include=['object']):
         df[col] = df[col].str.strip()
-
+    
     return df
 
 
@@ -308,19 +305,18 @@ def generate_distinct_colors(n):
         colors.append(rgb)
     return colors
 
-
 def highlight_products(image, product_descriptions):
     # Convert PIL Image to OpenCV format
     opencv_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
-
+    
     # Convert to grayscale
     gray = cv2.cvtColor(opencv_image, cv2.COLOR_BGR2GRAY)
-
+    
     # Apply thresholding to preprocess the image
     thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
 
     # Perform text detection using morphological operations
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
     dilate = cv2.dilate(thresh, kernel, iterations=13)
     cnts = cv2.findContours(dilate, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = cnts[0] if len(cnts) == 2 else cnts[1]
@@ -333,8 +329,8 @@ def highlight_products(image, product_descriptions):
     # Loop through contours and filter for potential text regions
     for i, c in enumerate(cnts):
         area = cv2.contourArea(c)
-        x, y, w, h = cv2.boundingRect(c)
-
+        x,y,w,h = cv2.boundingRect(c)
+        
         if area > 10 and w > 10 and h > 10:
             color = colors[i % len(colors)]
             # Draw a green rectangle around the potential text region
@@ -342,11 +338,19 @@ def highlight_products(image, product_descriptions):
 
     # Convert back to PIL Image
     highlighted_pil = Image.fromarray(cv2.cvtColor(highlighted_image, cv2.COLOR_BGR2RGB))
-
+    
     return highlighted_pil
 
 
+
+
+
+
 # ==========================================================\
+
+
+
+
 
 
 def main():
@@ -402,7 +406,7 @@ def main():
     c1, c2 = st.columns(2)
 
     with c1:
-        st.image("IMAGES/images (1).png", width=300)
+        st.image("IMAGES/images (1).png",width=300)
 
     with c2:
         st.markdown(
@@ -419,50 +423,53 @@ def main():
 
     master_csv = pd.read_csv("ESSKAY.csv")
     uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
-
+    
     if uploaded_file is not None:
-        with st.spinner(text="Loading PDF...."):
+        with st.spinner(text="Loading PDF...."):    
             pages_content = extract_text_and_images_from_pdf(uploaded_file)
             all_image_reports = []
         with st.spinner("Extracting text"):
             for i, page in enumerate(pages_content):
-                st.subheader(f"Page {i + 1}")
-
+                st.subheader(f"Page {i+1}")
+                
                 if page["images"]:
-                    st.subheader(f"Image Analysis for Page {i + 1}")
-
-                    pdf_images = convert_from_bytes(uploaded_file.getvalue(), first_page=i + 1, last_page=i + 1)
-
+                    st.subheader(f"Image Analysis for Page {i+1}")
+                    
+                    try:
+                        pdf_images = convert_from_bytes(uploaded_file.getvalue(), first_page=i+1, last_page=i+1)
+                    except Exception as e:
+                        st.error(f"Error converting PDF to image: {str(e)}")
+                        st.info("If the error persists, please check if poppler is correctly installed on the system.")
+                        continue
                     for j, img in enumerate(pdf_images):
                         col1, col2 = st.columns(2)
-
+                        
+                        
                         with col2:
                             with st.spinner("Reading Invoices...."):
                                 if "image_analysis" not in st.session_state:
                                     image_analysis = analyze_invoice_image(img, page["text"])
                                     st.session_state.image_analysis = image_analysis
                                 with st.expander("Generated Results"):
-                                    st.write(f"Image Analysis Result - Image {j + 1}", st.session_state.image_analysis)
+                                    st.write(f"Image Analysis Result - Image {j+1}", st.session_state.image_analysis)
                                 all_image_reports.append(st.session_state.image_analysis)
-
+                            
                             if 'error' not in st.session_state.image_analysis:
                                 st.subheader(f"Extracted Data from Invoice")
                                 df = combine_image_reports([st.session_state.image_analysis])
                                 st.dataframe(df, height=200)
                         with col1:
-
+                                
                             if 'image_analysis' in st.session_state and 'error' not in st.session_state.image_analysis:
                                 invoice_data = st.session_state.image_analysis['invoice']
-                                product_descriptions = [item['description'] for item in invoice_data['items'] if
-                                                        item['description']]
-
+                                product_descriptions = [item['description'] for item in invoice_data['items'] if item['description']]
+                                
                                 highlighted_img = highlight_products(img, product_descriptions)
-                                st.image(highlighted_img, caption="Highlighted Product Descriptions",
-                                         use_column_width=True)
+                                st.image(highlighted_img, caption="Highlighted Product Descriptions", use_column_width=True)
                             else:
                                 st.error(f"Error in image analysis: {image_analysis['error']}")
                 else:
-                    st.write(f"No images found on Page {i + 1}")
+                    st.write(f"No images found on Page {i+1}")
         with st.spinner("Generating Reports"):
             if all_image_reports:
                 st.subheader("Combined DataFrame of All Documents")
@@ -479,7 +486,6 @@ def main():
                     file_name="Esskay.csv",
                     mime="text/csv",
                 )
-
 
 if __name__ == "__main__":
     main()
