@@ -6,7 +6,7 @@ openai~=1.37.1
 opencv_python==4.10.0.82
 pandas==2.2.2
 pdf2image==1.17.0
-pdfminer.six==20240706
+pdfminer.six
 Pillow~=10.3.0
 python-dotenv==1.0.1
 streamlit==1.30.0
