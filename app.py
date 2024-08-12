@@ -423,7 +423,7 @@ def main():
         )
         st.subheader("***Precision-Driven AI for Intelligent Invoice Analysis***")
 
-    master_csv = pd.read_csv("Esskay.csv")
+    master_csv = pd.read_csv("ESSKAY.csv")
     uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
     
     if uploaded_file is not None:
