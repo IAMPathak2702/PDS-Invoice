@@ -2,13 +2,14 @@ fuzzywuzzy==0.18.0
 langchain_core==0.2.29
 langchain_openai==0.1.21
 numpy>=1.26.0,<2.0.0
-openai==1.40.3
+openai~=1.37.1
 opencv_python==4.10.0.82
 pandas==2.2.2
 pdf2image==1.17.0
 pdfminer.six==20240706
-Pillow==10.4.0
+Pillow~=10.3.0
 python-dotenv==1.0.1
-streamlit==1.29.0
+streamlit==1.30.0
 poppler-utils
 python-Levenshtein
+opencv-python~=4.10.0.82
