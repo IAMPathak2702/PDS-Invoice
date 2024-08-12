@@ -33,7 +33,7 @@ from fuzzywuzzy import fuzz
 
 # Initialize OpenAI client
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key= st.secrets['openai']['api_key']
 
 
 
@@ -403,7 +403,7 @@ def main():
         """,
         unsafe_allow_html=True
     )
-    
+
     # Layout with two columns
     c1, c2 = st.columns(2)
 
