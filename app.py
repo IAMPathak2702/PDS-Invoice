@@ -354,54 +354,12 @@ def highlight_products(image, product_descriptions):
 
 
 def main():
-    st.set_page_config(layout="wide")
+    st.set_page_config(page_icon="IMAGES/images (1).png",
+                       page_title="Intelli-InvoiceAI",
+                       layout="wide")
     # Set custom CSS for centering the h1 heading and adding animation
-    st.markdown(
-        """
-        <style>
-        body {
-            font-family: "Poppins", sans-serif;
-            color: #fff;
-            background-color: #000000;
-            font-weight: 400;
-            background: linear-gradient(-45deg, #000000, #161617, #000000, #141414);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            }
-        
-        
-        
-        
-        
-        .centered-h1 {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Helvetica Neue', sans-serif;
-            font-weight: bold;
-            font-size: 3.8rem;
-            animation: fadeIn 2s ease-in-out;
-        }
-        .centered-h1 span {
-            margin: 0 5px; /* Add space between words */
-            animation: colorChange 3s infinite;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes colorChange {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.04); }
-            100% { transform: scale(1); }
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
+    
+ 
     # Layout with two columns
     c1, c2 = st.columns(2)
 
@@ -410,15 +368,51 @@ def main():
 
     with c2:
         st.markdown(
-            """
-            <h1 class="centered-h1">
-                <span style="color: orange;">PDS</span>
-                <span style="color: blue;">Intelli-Invoice</span>
-                <span style="color: green;">AI</span>
-            </h1>
-            """,
-            unsafe_allow_html=True
-        )
+    """
+    <style>
+    .container {
+        position: relative;
+        width: 100%;
+        height: auto; /* Adjust height as needed */
+        background-color: #ffff; /* Background color for the rectangle */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        colot:white;
+    }
+    .title {
+        font-size: 2.5rem;
+        color:#fff;
+        font-weight: bold;
+        text-align: center;
+        background: linear-gradient(45deg, #216dcf, #4b33AB);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: growShrink 5s ease-in-out infinite, gradientAnimation 5s ease-in-out infinite;
+        z-index: 200000;
+        position: relative;
+    }
+    
+      
+
+    @keyframes growShrink {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.3);
+        }
+    }
+
+    
+    </style>
+    <div class="container">
+        <div class="rectangle"></div>
+        <div class="title">PDS INTELLI-INVOICE AI</div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
         st.subheader("***Precision-Driven AI for Intelligent Invoice Analysis***")
 
     master_csv = pd.read_csv("ESSKAY.csv")

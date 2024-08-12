@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            color: Black;
+            background-color: #ffffff;
+            /* Set background color to white */
+            font-weight: 400;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* Ensure the body takes up the full viewport height */
+            margin: 0;
+            /* Remove default margins */
+            overflow: hidden;
+            /* Hide overflow for a cleaner look */
+            animation: backgroundAnimation 30s ease infinite;
+            /* Background animation */
+        }
+
+        .centered-h1 {
+            font-family: 'Helvetica Neue', sans-serif;
+            font-weight: bold;
+            font-size: 3.8rem;
+            background: linear-gradient(-45deg, #216dcf, #4b33AB);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textAnimation 3s ease-in-out infinite, fadeIn 2s ease-in-out;
+            /* Combined animations */
+            text-align: center;
+            /* Center text horizontally */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            /* Shadow for better text visibility */
+        }
+
+        @keyframes textAnimation {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes backgroundAnimation {
+            0% {
+                background-color: #ffffff;
+            }
+
+            50% {
+                background-color: #f0f0f0;
+                /* Slightly darker for effect */
+            }
+
+            100% {
+                background-color: #ffffff;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="centered-h1">PDS Intelli-Invoice AI</h1>
+</body>
+
+</html>
