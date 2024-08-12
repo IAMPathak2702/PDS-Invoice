@@ -11,3 +11,4 @@ Pillow==10.4.0
 python-dotenv==1.0.1
 streamlit==1.29.0
 poppler-utils
+python-Levenshtein
