@@ -9,6 +9,6 @@ pdf2image==1.17.0
 pdfminer.six
 Pillow~=10.3.0
 python-dotenv==1.0.1
-streamlit==1.30.0
+streamlit==1.29.0
 poppler-utils
 python-Levenshtein
